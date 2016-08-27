@@ -1,6 +1,6 @@
 var twilio = require('twilio');
 var SurveyResponse = require('../models/SurveyResponse');
-var survey = require('../survey_data');
+//var survey = require('../survey_data');
 
 // Main interview loop
 exports.interview = function(request, response) {
@@ -22,60 +22,77 @@ exports.interview = function(request, response) {
     // Find an in-progess survey if one exists, otherwise create one
     SurveyResponse.advanceSurvey({
         phone: phone,
-        input: input,
-        survey: survey
-    }, function(err, surveyResponse, questionIndex) {
-        var question = survey[questionIndex];
+        input: input
+    }, function(err, surveyResponse, setNext) {
+        
+        function setNextThenRespond(next){
+            setNext(next,function(er){
+                if(er){
+                    say('Terribly sorry, but an error has occurred. Goodbye.');
+                    return respond();
+                }else{
+                    return respond();
+                }
+            })
+        }
 
         if (err || !surveyResponse) {
             say('Terribly sorry, but an error has occurred. Goodbye.');
             return respond();
         }
-
-        // If question is null, we're done!
-        if (!question) {
-            say('Thank you for taking this survey. Goodbye!');
-            return respond();
-        }
-
         // Add a greeting if this is the first question
-        if (questionIndex === 0) {
+        else if (surveyResponse.next == '') {
             say('Thank you for calling the support hotline for Call of the Ancients.  Please enter your error code or ticket number, followed by the pound, or hash sign.');
-        }
-
-        // Otherwise, ask the next question
-        say(question.text);
-
-        // Depending on the type of question, we either need to get input via
-        // DTMF tones or recorded speech
-        if (question.type === 'text') {
-            say('Please record your response after the beep. '
-                + 'Press any key to finish.');
-            twiml.record({
-                transcribe: false,
-               // transcribeCallback: '/voice/' + surveyResponse._id + '/transcribe/' + questionIndex,
-                maxLength: 60
-            });
-        } else if (question.type === 'boolean') {
-            say('Press one for "yes", and any other key for "no".');
             twiml.gather({
                 timeout: 10,
-                numDigits: 1
+                finishOnKey: '#'
             });
-        } else {
-            // Only other supported type is number
-            say('Enter the number using the number keys on your telephone.' 
-                + ' Press star to finish.');
-            twiml.gather({
-                timeout: 10,
-                finishOnKey: '*'
-            });
+            setNextThenRespond('ticket');
+        }else if (surveyResponse.next == 'ticket'){//got ticket no
+            var ticketn;
+            try {
+                ticketn  = Number(input);
+                if (!ticketn){
+                    say('That\'s not a valid number.  Please try again.'); 
+                    setNextThenRespond('');
+                }
+            }catch(e){
+                setNextThenRespond('');
+            }
+                say('you inputted '+ticketn+'.  Sweet huh?');
+                setNextThenRespond('');
+        }else{
+            say('cannot do this: '+surveyResponse.next);
+            setNextThenRespond('');
         }
 
-        // render TwiML response
-        respond();
     });
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Transcripton callback - called by Twilio with transcript of recording
 // Will update survey response outside the interview call flow
