@@ -17,6 +17,7 @@ exports.interview = function(request, response) {
     function respond() {
         response.type('text/xml');
         response.send(twiml.toString());
+        console.log(twiml.toString());
     }
 
     // Find an in-progess survey if one exists, otherwise create one
@@ -26,19 +27,23 @@ exports.interview = function(request, response) {
     }, function(err, surveyResponse, setNext) {
         
         function setNextThenRespond(next){
-            setNext(next,function(er){
-                if(er){
-                    say('Terribly sorry, but an error has occurred. Goodbye.');
-                    return respond();
-                }else{
-                    return respond();
-                }
-            })
+            if (next === null){//means an error happened
+                say('Terribly sorry, but an error has occurred. Goodbye.');
+                return respond();
+            }else{
+               setNext(next,function(er){
+                    if(er){
+                        say('Terribly sorry, but an error has occurred. Goodbye.');
+                        return respond();
+                    }else{
+                        return respond();
+                    }
+                })
+            }
         }
 
         if (err || !surveyResponse) {
-            say('Terribly sorry, but an error has occurred. Goodbye.');
-            return respond();
+            return setNextThenRespond(null);//woops
         }
         // Add a greeting if this is the first question
         else if (surveyResponse.next == '') {
