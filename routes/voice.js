@@ -1,6 +1,7 @@
 var twilio = require('twilio');
 var SurveyResponse = require('../models/SurveyResponse');
 //var survey = require('../survey_data');
+var scriptManager = require('../script/scriptManager.js');
 
 // Main interview loop
 exports.interview = function(request, response) {
@@ -26,50 +27,13 @@ exports.interview = function(request, response) {
         input: input
     }, function(err, surveyResponse, setNext) {
         
-        function setNextThenRespond(next){
-            if (next === null){//means an error happened
-                say('Terribly sorry, but an error has occurred. Goodbye.');
-                return respond();
-            }else{
-               setNext(next,function(er){
-                    if(er){
-                        say('Terribly sorry, but an error has occurred. Goodbye.');
-                        return respond();
-                    }else{
-                        return respond();
-                    }
-                })
-            }
-        }
 
-        if (err || !surveyResponse) {
-            return setNextThenRespond(null);//woops
+        var next = '';
+        if (surveyResponse && surveyResponse.next){
+            next = surveyResponse.next;
         }
-        // Add a greeting if this is the first question
-        else if (surveyResponse.next == '') {
-            say('Thank you for calling the support hotline for Call of the Ancients.  Please enter your error code or ticket number, followed by the pound, or hash sign.');
-            twiml.gather({
-                timeout: 10,
-                finishOnKey: '#'
-            });
-            setNextThenRespond('ticket');
-        }else if (surveyResponse.next == 'ticket'){//got ticket no
-            var ticketn;
-            try {
-                ticketn  = Number(input);
-                if (!ticketn){
-                    say('That\'s not a valid number.  Please try again.'); 
-                    setNextThenRespond('');
-                }
-            }catch(e){
-                setNextThenRespond('');
-            }
-                say('you inputted '+ticketn+'.  Sweet huh?');
-                setNextThenRespond('');
-        }else{
-            say('cannot do this: '+surveyResponse.next);
-            setNextThenRespond('');
-        }
+        
+        scriptManager.process({input:input,phone:phone},surveyResponse,twiml,next,setNext,respond);
 
     });
 };
