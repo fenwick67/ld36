@@ -1,6 +1,7 @@
 var floor;
 var pyramid;
 var number = '(844) 293-0481';
+var myAudio;
 
 $(function() {
     
@@ -25,10 +26,27 @@ $(function() {
     function go(){
         canvas = $('#canvas')[0];
         ctx = canvas.getContext('2d');
+        playMusic();
         //kick off ticks
         requestAnimationFrame(tick);
         $('#canvas').on('click tap',startGame);
     }
+    $('#mute').on('click tap',function(){
+        var $this = $(this);
+        var i = $this.find('i');
+        if (myAudio){
+            if (myAudio.muted){
+                 i.removeClass('fa-volume-off');
+                i.addClass('fa-volume-up');
+                myAudio.muted = false;
+            }else{
+                i.removeClass('fa-volume-up');
+                i.addClass('fa-volume-off');
+                myAudio.muted = true;
+            }
+            
+        }
+    });
 });
 
 var canvas;
@@ -130,6 +148,9 @@ function startGame(){
 
 function beatable(){
     //check if game is beatable
+    if (window.localStorage.beatable){
+        return true;
+    }
     return false;
 }
 function getErrorMessage(){
@@ -158,3 +179,21 @@ function errorCode(){
     }
     return uaDigit() + '' + 8652;
 }
+
+function playMusic(){
+    myAudio = new Audio('./recordings/ancients.wav'); 
+    if (typeof myAudio.loop === 'boolean')
+    {
+        myAudio.loop = true;
+    }
+    else
+    {
+        myAudio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+        }, false);
+    }
+    myAudio.play();
+}
+
+window.getUserErrorCode = errorCode;

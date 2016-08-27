@@ -23,3 +23,27 @@ canvas{
   -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
 
 }
+
+.bighr{
+    /*massive horizontal rule*/
+    margin-top:60%;
+}
+.terminaloutput, #terminaloutput{
+    height:30em;
+    font-size:1.2em;
+    overflow-y:scroll;
+    text-align:start;
+}
+.admin #terminaloutput, .admin .terminaloutput, .admin input{
+    background-color:#222;
+    color:#ff9b9b;
+}
+.admin .btn{
+    border-color:#222;
+    background-color:#ff9b9b;
+    color:#222;
+}
+#adminconsole{
+    height:100%;
+    padding-bottom:3em;
+}

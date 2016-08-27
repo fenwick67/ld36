@@ -1,6 +1,7 @@
 // this contains the tree for the phone dialogue
 
-// next is a callback with (nextScriptThing, redirect)
+// next is a callback with (nextScriptEntry <String>, redirect <Boolean>)
+// redirect causes twilio to hit the endpoint again, which means it won't hang up.
 
 
 exports[''] = function(args,surveyResponse,twiml,next){
@@ -37,6 +38,7 @@ exports.ticket = function(args,surveyResponse,twiml,next){
 
     twiml.say('Please wait while we redirect your call');
     //todo hold music
+    playWav('ancients');
     twiml.pause('',{length:10});
     playWav('greeting');
     
