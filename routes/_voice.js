@@ -40,7 +40,8 @@ exports.interview = function(request, response) {
 
         // Add a greeting if this is the first question
         if (questionIndex === 0) {
-            say('Thank you for calling the support hotline for Call of the Ancients.  Please enter your error code or ticket number, followed by the pound, or hash sign.');
+            say('Thank you for taking our survey. Please listen carefully '
+                + 'to the following questions.');
         }
 
         // Otherwise, ask the next question
@@ -52,8 +53,9 @@ exports.interview = function(request, response) {
             say('Please record your response after the beep. '
                 + 'Press any key to finish.');
             twiml.record({
-                transcribe: false,
-               // transcribeCallback: '/voice/' + surveyResponse._id + '/transcribe/' + questionIndex,
+                transcribe: true,
+                transcribeCallback: '/voice/' + surveyResponse._id
+                    + '/transcribe/' + questionIndex,
                 maxLength: 60
             });
         } else if (question.type === 'boolean') {
