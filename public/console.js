@@ -1,9 +1,8 @@
-/*global $*/
+/*global $ _*/
 
 var number = '(844) 293-0481';
 var admin = false;
 var magic = '85238';
-
 
 $(function() {
     consolify($('#adminconsole'));
@@ -24,6 +23,10 @@ function consolify(el){
     
     el.html(h);
     
+    if (window.beatable()){
+        kickOut();
+    }
+    
     //handle enter or button click
     el.on('keypress',function(e){
         if (e.key == 'Enter' || e.key == "Return"){
@@ -42,13 +45,14 @@ function consolify(el){
         //put at end of term
         var stdout = $('#terminaloutput');
         
-        var delim = admin?"ADMIN> ":"> ";
+        var delim = admin?"ADMIN> ":"ANON> ";
         
-        stdout.text(stdout.text() + '\n\n' + delim+ s);
+        stdout.html(stdout.html() + '\n\n' + delim+ s );
         
         //different commands
         command(s.replace(/[\n\r\t]/ig,''),function(result){
-            stdout.text( stdout.text() +'\n'+ result);
+            var framed = ('\n' + result).replace(/\n/ig,'\n   ');
+            stdout.html( stdout.html() + framed);
             stdout.scrollTop(1000000000000000000000000);//hacky but works!
         });
     }
@@ -135,9 +139,16 @@ function consolify(el){
                 var parameter = argv[2];
                 var value = argv[3];
                 
-                if (ticket === window.getUserErrorCode && parameter === 'mx3' && value === "582"){
+                if (ticket === window.getUserErrorCode() && parameter === 'mx3' && value === "582"){
                     //let them win the game
                     window.localStorage.setItem("beatable","YES");
+                    callback ('<b class="green">Successfully set parameter "'+parameter+'" to "'+value+'" for ticket #'+ticket+'</b>');
+                    kickOut();
+                    return;
+                }
+                
+                if (!window.browserForTicket(ticket) && ticket !== magic ){
+                    return callback ('TICKET NUMBER NOT FOUND: '+ticket);
                 }
                 
                 return callback ('Successfully set parameter "'+parameter+'" to "'+value+'" for ticket #'+ticket);
@@ -149,7 +160,7 @@ function consolify(el){
         
     }
     
-    var lines = '*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*';
+    var lines = '*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*';
     
 }
 
@@ -166,7 +177,7 @@ function notesLookup(s){
             "Otherwise, wait for the fix in a few days.  Screw 'em."
         ].join('\n');
     }else{
-        var browser = browserForTicket(s);
+        var browser = window.browserForTicket(s);
         if (!browser){
             return "Unable to find ticket: "+s;
         }
@@ -184,3 +195,30 @@ function notesLookup(s){
         ].join('\n');
     }
 }
+
+function kickOut(){
+    //kick the user out
+    var stdout = $('#terminaloutput');
+    var delay = 2000;
+    
+    var kickMsgs = [
+        "I see you",
+        "",
+        "You know, you really shouldn't be here",
+        "You're aware I could prosecute you right?",
+        "Have you read the DMCA?  The CFPA?",
+        "I have your phone number",
+        "Getting your name and address would be child's play",
+        "now quit messing around"
+    ];
+
+    kickMsgs.forEach(function(msg,index){
+         setTimeout(function(){
+            stdout.html( stdout.html() + '\n<b class="green">' + msg + '</b>');
+            stdout.scrollTop(1000000000000000000000000);//hacky but works!
+        },index*delay);
+    });
+       
+    // navigate back to game page
+    setTimeout(function(){window.location.href = "/index.html"},kickMsgs.length *delay);
+}  

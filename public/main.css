@@ -47,3 +47,11 @@ canvas{
     height:100%;
     padding-bottom:3em;
 }
+#adminconsole.admin .green{
+    color:#0f0 !important;
+    font-weight:normal;
+}
+#adminconsole .green{
+    color:#090 !important;
+    font-weight:normal;
+}

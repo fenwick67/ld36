@@ -31,15 +31,15 @@ exports.ticket = function(args,surveyResponse,twiml,next){
         twiml.play('/recordings/'+file+'.wav');
     }
     
-    if (ticketn == 85238){
-        twiml.say('Reminder to all employees: the admin panel has been updated to use a new password, which is P.A.S.S.W.O.R.D.  Thank you for your understanding.');
+    if (ticketn === 85238){
+        twiml.say('An error has occurred.  The ticket console password for the "Admin" account has been reset to its default, which is password, one.  '+
+        'Once again, the password for the admin account, A.D.M.I.N., has been reset to, P.,A.,S.,S.,W.,O.,R.,D., one.  Thank you, and goodbye.');
         return next('');
     }
 
-    twiml.say('Please wait while we redirect your call');
-    //todo hold music
+    twiml.say('Please wait while we redirect your call.  An operator will be with you shortly.  Current wait time is approximately, 2, minutes.');
     playWav('ancients');
-    twiml.pause('',{length:10});
+    twiml.say('Your call is important to us.  Please stay on the line for the next available operator.');
     playWav('greeting');
     
     var browser = Number(args.input[0]);//first digit
@@ -55,7 +55,6 @@ exports.ticket = function(args,surveyResponse,twiml,next){
     }else{
         playWav('otherbrowser');
     }
-    
     playWav('ticketpage');
     return next('');
 }

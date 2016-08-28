@@ -25,6 +25,9 @@ $(function() {
     
     function go(){
         canvas = $('#canvas')[0];
+        if (!canvas){
+            return;//no canvas
+        }
         ctx = canvas.getContext('2d');
         playMusic();
         //kick off ticks
@@ -153,6 +156,9 @@ function beatable(){
     }
     return false;
 }
+
+window.beatable = beatable;
+
 function getErrorMessage(){
     return 'Please call '+number + ' with your error code\nto chat with an associate.\nError code: \n'+errorCode();
 }
