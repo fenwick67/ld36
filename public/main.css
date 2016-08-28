@@ -59,6 +59,7 @@ h1 a{
 }
 .ticketheader{
     display:block;
+    text-align:right;
     text-align:end;
 }
 #tickets{
