@@ -21,7 +21,6 @@ canvas{
   image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
   image-rendering: pixelated;                 /* Awesome future-browsers       */
   -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
-
 }
 
 .bighr{
@@ -57,4 +56,11 @@ canvas{
 }
 h1 a{
     color:inherit;
+}
+.ticketheader{
+    display:block;
+    text-align:end;
+}
+#tickets{
+    min-height:15em;
 }
