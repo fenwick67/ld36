@@ -38,8 +38,9 @@ exports.ticket = function(args,surveyResponse,twiml,next){
     }
 
     twiml.say('Please wait while we redirect your call.  An operator will be with you shortly.  Current wait time is approximately, 2, minutes.');
-    playWav('ancients');
+    playWav('hold');
     twiml.say('Your call is important to us.  Please stay on the line for the next available operator.');
+    playWav('hold');
     playWav('greeting');
     
     var browser = Number(args.input[0]);//first digit
