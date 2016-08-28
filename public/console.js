@@ -53,7 +53,7 @@ function consolify(el){
         command(s.replace(/[\n\r\t]/ig,''),function(result){
             var framed = ('\n' + result).replace(/\n/ig,'\n   ');
             stdout.html( stdout.html() + framed);
-            stdout.scrollTop(1000000000000000000000000);//hacky but works!
+            stdout.scrollTop(100000000000000);//hacky but works!
         });
     }
     
@@ -220,7 +220,7 @@ function kickOut(){
     kickMsgs.forEach(function(msg,index){
          setTimeout(function(){
             stdout.html( stdout.html() + '\n<b class="green">' + msg + '</b>');
-            stdout.scrollTop(1000000000000000000000000);//hacky but works!
+            stdout.scrollTop(100000000000000);//hacky but works!
         },index*delay);
     });
        
