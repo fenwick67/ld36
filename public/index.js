@@ -73,12 +73,10 @@ function tick(t){
 var game = {
     started:false,
     beatable:false,
-    character:{
-        position:{
-            x:0,
-            y:0
-        }
-    }
+    enemyHealth:100,
+    attackDamage:10,
+    attack:false,
+    enemyHealthBarVisible:false
 };
     
 function update(dt,time){
@@ -90,7 +88,27 @@ function update(dt,time){
         alert(msg);
         console.log(msg);
         game.alerted = true;
+    }else if (!game.started){
+        return;
     }
+    
+    //attack
+    if (game.attack && !game.won){
+        game.attackTime = time;
+        game.attack = false;
+        game.enemyHealth = Math.max(game.enemyHealth - game.attackDamage,0);
+        if (game.enemyHealth <= 0){
+            win();
+        }
+    }
+    
+    function win(){
+        if (!game.won){
+            game.won = true;
+            game.winTime = time;
+        }
+    }
+    
 }
 
 function render(dt,time){
@@ -108,8 +126,13 @@ function render(dt,time){
     ctx.fillRect(0,0,640,480);
     ctx.setTransform(1,0,0,1,0,0);
     
+    var pyramidOffset = Math.sin(time/500)*50;
+    if (game.won){
+       pyramidOffset = pyramidOffset - ( game.winTime - time )/5;
+    }
+    
     //draw pyramid
-    ctx.drawImage(pyramid,200,100 + Math.sin(time/500)*50 );
+    ctx.drawImage(pyramid,200,100  + pyramidOffset);
     
     //draw floor tiles
     
@@ -121,8 +144,9 @@ function render(dt,time){
         ctx.setTransform(1,0,0,1,0,0);
 
 
-    drawButton(50,50,'Click / Tap to Play!')
-    
+    if (!game.started){
+        drawButton(50,50,'Click/Tap to Start/Attack')
+    }
     function drawButton(x,y,text,size){
         text = text.toString();
         var size = size || 20;
@@ -142,11 +166,70 @@ function render(dt,time){
         
     }
     
+    
+    //sugar foot sugar foot
+    if (game.enemyHealthBarVisible){
+        //draw health bar
+        ctx.fillStyle= '#1f6770';
+        ctx.fillRect(20,350,600,30);
+        ctx.fillStyle= '#f99';
+        ctx.fillRect(20,350,600 * game.enemyHealth/100,30);
+    }
+    
+    
+    if (game.attackTime){
+        drawAttack(time - game.attackTime);
+    }
+    function drawAttack(dt){
+        //draw flash
+        var flashDuration = 500;
+        if (dt > flashDuration){
+            return;
+        }
+        var intensity = (flashDuration - dt)/flashDuration;
+        ctx.fillStyle = 'rgba(253,229,113,'+intensity+')';
+        ctx.fillRect(0,0,640,480);
+    }
+    
+    if (game.won){
+        showCredits();   
+    }
+    function showCredits(){
+        var creditDuration = 3000;
+        var credits = [
+            'WINNER',
+            "",
+            "Congratulations!",
+            "",
+            "Credits: ",
+            "Sound: Fenwick",
+            "Programming: Fenwick",
+            "Voice: Fenwick",
+            ""
+        ].join('\n');
+        var creditTime = time - game.winTime;
+        var tp = Math.min(1,creditTime / creditDuration);
+        ctx.fillStyle = 'rgba(0,0,0,'+tp+')';
+        ctx.fillRect(0,0,640,480);
+        
+        if (creditTime > creditDuration){
+            drawButton(0,100,credits,10);
+        }
+        
+        
+    }
+    
 }
 
 function startGame(){
-    game.started = true;
-    game.beatable = beatable();
+    if (!game.started){
+        game.started = true;
+        game.beatable = beatable();
+        game.enemyHealthBarVisible = true;
+        return;
+    }
+    game.attack = true;
+    
 }
 
 function beatable(){
@@ -160,7 +243,7 @@ function beatable(){
 window.beatable = beatable;
 
 function getErrorMessage(){
-    return 'Please call '+number + ' with your error code\nto chat with an associate.\nError code: \n'+errorCode();
+    return 'RUNTIME ERROR \nPlease call '+number + ' with your error code\nto chat with an associate.\nError code: \n'+errorCode();
 }
 
 function errorCode(){
@@ -203,3 +286,4 @@ function playMusic(){
 }
 
 window.getUserErrorCode = errorCode;
+

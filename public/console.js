@@ -13,7 +13,7 @@ function consolify(el){
     var h = [
     '<pre id="terminaloutput"></pre>',
     '<div class="input-group">',
-      '<input type="text" id="terminalinput" class="form-control" placeholder="">',
+      '<input type="text" id="terminalinput" class="form-control" placeholder="Type your command here (try &quot;HELP&quot; )">',
       '<span class="input-group-btn">',
         '<button class="btn btn-primary" type="button" id="commandbutton">Submit Command</button>',
       '</span>',
@@ -65,15 +65,19 @@ function consolify(el){
         
         if (!admin){
             var commandList = ["",
-            "HELP                        : Show this",
-            "LOGIN [username] [password] : Admin login"];
+            "HELP              : Show this",
+            "LOGIN [password]  : Administrator login",
+            "                      (example: entering 'LOGIN SECRET' would",
+            "                      try to log in with a password of 'SECRET')"
+            
+            ];
             
             if (s === "help" || s === ""){
                 return callback(lines + "\nAvailable commands: "+commandList.join('\n') + '\n' +lines);
             }
             
             if (s.indexOf('login') === 0){
-                if (s.replace(/\s/ig,'').indexOf('loginadminpassword1') == 0 ){
+                if (s.replace(/\s/ig,'').indexOf('loginpassword1') == 0 ){
                     //YOU LOGGED IN
                     admin = true;
                     el.addClass('admin');
@@ -90,7 +94,7 @@ function consolify(el){
             var commandList = ["",
             "LOGOUT                                : Log out (duh)",
             "TICKET [ticketnumber]                 : view ticket info ",
-            "NOTES [ticketnumber]                  : look up support notes for call <confidential, obviously>",
+            "NOTES [ticketnumber]                  : look up support notes for call &lt;confidential&gt;",
             "SETPARAM [ticket] [parameter] [value] : Set a parameter for a user.",
             '                                        (example: "SETPARAM 96583 DX5 32" ',
             '                                         would set the parameter DX5 to 32',
@@ -139,7 +143,7 @@ function consolify(el){
                 var parameter = argv[2];
                 var value = argv[3];
                 
-                if (ticket === window.getUserErrorCode() && parameter === 'mx3' && value === "582"){
+                if (ticket === window.getUserErrorCode() && parameter === 'dmg' && value === "100"){
                     //let them win the game
                     window.localStorage.setItem("beatable","YES");
                     callback ('<b class="green">Successfully set parameter "'+parameter+'" to "'+value+'" for ticket #'+ticket+'</b>');
@@ -171,7 +175,7 @@ function notesLookup(s){
         return [
             'Issue log: '+magic,
             '',
-            'It seems that setting debug parameter "MX3" to "582" in the console fixed it for this guy',
+            'It seems that setting debug parameter "DMG" to "100" in the console fixed it for this guy',
             "Unfortunately, I don't have time to fix this for everybody.  If a user calls in enough",
             "times or gets angry enough, you can walk them through using SETPARAM in the console.  ",
             "Otherwise, wait for the fix in a few days.  Screw 'em."

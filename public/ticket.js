@@ -11,7 +11,7 @@ function handleTicket(text){
     if (text.length < 2){return;}
     
     if (text.replace(/\D/ig,'') === magic){
-        var h = '<p class="bg-danger"><b>ERROR DISPLAYING TICKET</b> please use <a href="./console.html">Admin Console</a></p>'
+        var h = '<p class="bg-danger"><b>ERROR DISPLAYING TICKET</b> please use <a href="./console.html">Admin Console</a> and / or call the support line</p>'
         $('#tickets').html(h);
         return;
     }

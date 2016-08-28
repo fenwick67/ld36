@@ -33,7 +33,7 @@ exports.ticket = function(args,surveyResponse,twiml,next){
     
     if (ticketn === 85238){
         twiml.say('An error has occurred.  The ticket console password for the "Admin" account has been reset to its default, which is password, one.  '+
-        'Once again, the password for the admin account, A.D.M.I.N., has been reset to, P.,A.,S.,S.,W.,O.,R.,D., one.  Thank you, and goodbye.');
+        'Once again, the password for the admin account has been reset to, P.,A.,S.,S.,W.,O.,R.,D., one.  Thank you, and goodbye.');
         return next('');
     }
 
