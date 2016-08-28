@@ -87,6 +87,11 @@ window.ticketLookup = function(text){
             ['Ticket Number','Date Submitted','Status','Support Comments'],
             [text,new Date().toDateString(),'Open','User called with issues using '+browserForCode(text)+'. Same issue as other tickets.  Should resolve shortly.']
         ];
+    }else if (text == magic){
+        return [
+            ['Ticket Number','Date Submitted','Status','Support Comments'],
+            [text,new Date('2016-08-27').toDateString(),'Closed','Issues playing the game, eventually resolved.  View notes for more details.']
+        ];
     }else{
         return false;
     }

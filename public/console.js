@@ -115,6 +115,7 @@ function consolify(el){
                 //show ticket:
                 var tn = s.replace('ticket','').replace(/\s/ig,'');
                 var tick = window.ticketLookup(tn);
+                console.log('gggg');
                 if (!tick){
                     return callback ("ERROR: Bad ticket number: "+tn);
                 }
