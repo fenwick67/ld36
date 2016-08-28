@@ -31,6 +31,7 @@ canvas{
     height:30em;
     font-size:1.2em;
     overflow-y:scroll;
+    text-align:left;
     text-align:start;
 }
 .admin #terminaloutput, .admin .terminaloutput, .admin input{
