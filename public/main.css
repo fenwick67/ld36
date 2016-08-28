@@ -55,3 +55,6 @@ canvas{
     color:#090 !important;
     font-weight:normal;
 }
+h1 a{
+    color:inherit;
+}
