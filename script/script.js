@@ -5,11 +5,15 @@
 
 
 exports[''] = function(args,surveyResponse,twiml,next){
-    twiml.say('Thank you for calling the support hotline for Call of the Ancients.  Please enter your error code or ticket number, followed by the pound, or hash sign.');
+    // https://twilio.github.io/twilio-node/#twimlNesting
+    
     twiml.gather({
         timeout: 10,
         finishOnKey: '#'
+    },function(){
+        this.say('Thank you for calling the support hotline for Call of the Ancients.  Please enter your error code or ticket number, followed by the pound, or hash sign.');
     });
+    
     next('ticket');
 }
 
